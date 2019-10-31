@@ -1,27 +1,29 @@
 import React, { Component } from 'react'
 import "./App.css"
-import {CardList} from "./components/card-list/card-list"
+import { CardList } from "./components/card-list/card-list"
 
 export default class App extends Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
-      monsters: []
+      monsters: [],
+      searchField: ""
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     fetch("http://jsonplaceholder.typicode.com/users")
-    .then(response => response.json())
-    .then(users => this.setState({monsters:users}))
+      .then(response => response.json())
+      .then(users => this.setState({ monsters: users }))
   }
 
   render() {
+    const { monsters, searchField } = this.state
+    const filteredMonsters = monsters.filter(monster => monster.name.toLowerCase().includes(searchField.toLowerCase()))
     return (
       <div className="App">
-        <CardList name="PB">
-          { this.state.monsters.map(monster => <h1 key={monster.id}>{ monster.name }</h1>) }
-        </CardList>
+        <input type="search" placeholder="search monsters" onChange={e => this.setState({ searchField: e.target })} />
+        <CardList monsters={filteredMonsters} />
       </div>
     )
   }
